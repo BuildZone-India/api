@@ -1,0 +1,158 @@
+openapi: "3.0.2"
+
+info:
+  version: "1.0"
+  title: BuildZone - India API
+  description: "The API definitions for BuildZone's India backend server. Get the category listings available, all the products in each category."
+  contact:
+    name: BuildZone - India
+    email: buildzone.india@gmail.com
+
+servers:
+  - url: https://buildzone-india.herokuapp.com/
+    description: Testing server
+
+paths:
+  /categories:
+    get:
+      summary: "Get categories"
+      description: "Get all the categories present in the database."
+      operationId: getCategories
+      parameters: 
+        - name: Authorization
+          in: header
+          description: "Firebase id token"
+          required: true
+          schema:
+            type: string
+          example: "ad1283nasbdaa-adsbqwAduih2ndasdjUhDOAwadjjfnuiasbidusp1239123ADmiasmdas0d1231232193i"
+          
+      responses:
+        200:
+          description: "Categories list response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoriesResponse'
+                
+        401:
+          description: "Authorization failed response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthFailedResponse'
+                
+  
+  /{category}:
+    get:
+      summary: "Get category listing"
+      description: "Get the product information for the specified category. You can also choose to limit number of results."
+      operationId: getProductListings
+      parameters: 
+        - name: Authorization
+          in: header
+          description: "Firebase id token"
+          required: true
+          schema:
+            type: string
+          example: "ad1283nasbdaa-adsbqwAduih2ndasdjUhDOAwadjjfnuiasbidusp1239123ADmiasmdas0d1231232193i"
+        - name: num
+          in: query
+          description: "Number of results to return"
+          schema:
+            type: integer
+            format: int32
+          example: 20
+        
+      responses:
+        200:
+          description: "Category product list response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductsListResponse'
+                
+        
+components:
+  schemas:
+    CategoriesResponse:
+      title: Response
+      type: object
+      properties:
+        _id:
+          type: string
+          description: "Document ID assignmed by MongoDB"
+          example: "5ef8d8eac90570e2f5af85b4"
+        img:
+          type: string
+          description: "Image URL for the category provided by the backend"
+          example: "https://www.primeabgb.com/wp-content/uploads/2019/02/AMD-RYZEN-7-2700X-8-Core-Socket-AM4-Processor.jpg.pagespeed.ce.XN6Qp39GTP.jpg"
+        name:
+          type: string
+          description: "Category name"
+          example: "Processors"
+          
+    AuthFailedResponse:
+      title: Response
+      type: object
+      properties:
+        message:
+          type: string
+          description: "Message received from server"
+          example: "Authorization required"
+          
+          
+    ProductsListResponse:
+      title: Response
+      type: object
+      properties:
+        _id:
+          type: string
+          description: "Document ID assignmed by MongoDB"
+          example: "5ef8d8eac90570e2f5af85b4"
+        availability:
+          type: string
+          description: "Product availability"
+          example: "Available"
+        brand:
+          type: string
+          description: "Product brand name"
+          example: "AMD"
+        categories:
+          type: array
+          items:
+            type: string
+            example: ['CPU (Processor)']
+        img:
+          type: string
+          description: "Product listing image"
+          example: "https://www.primeabgb.com/wp-content/uploads/2019/02/AMD-RYZEN-7-2700X-8-Core-Socket-AM4-Processor.jpg.pagespeed.ce.XN6Qp39GTP.jpg"
+        link:
+          type: string
+          description: "Product link on retailer website"
+          example: "https://www.primeabgb.com/online-price-reviews-india/amd-ryzen-7-2700x-8-core-3-7-ghz-4-3-ghz-max-boost-socket-am4-processor/"
+        pricing:
+          type: array
+          description: "Product prices, the listed price as well as discounted price if any"
+          items:
+            type: string
+            example: ["₹31,299", "₹27,650"]
+        sku:
+          type: string
+          description: "Product Identification Code or SKU"
+          example: "YD270XBGAFBOX"
+        tags:
+          type: array
+          description: "Product tags array"
+          items:
+            type: string
+            example: ["yd270xbgafbox"]
+        type:
+          type: string
+          description: "Product category"
+          example: "CPU"
+
+
+externalDocs:
+  description: Documentation and main site
+  url: https://buildzone-india.herokuapp.com/
